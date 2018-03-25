@@ -12,7 +12,8 @@
 #include <ESP8266WiFi.h>
 const char* ssid = "RepeaterWirelessNetwork";
 const char* password = "ddeedddd";
-boolean EnableWifi = true;
+boolean EnableWifi = false;
+
 /////
 
 ////MQTT
@@ -151,8 +152,8 @@ void setup()   {
   setup_wifi();
   wifi_set_sleep_type(MODEM_SLEEP_T);
   client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);}
-  else  Serial.println("not setting up wifi");
+  client.setCallback(callback);
+  
  //delay(10000);
 
  
@@ -175,9 +176,11 @@ void setup()   {
     tft.print("pushetta min max"); tft.print(minPushTemp);tft.print(" "); tft.print(maxPushTemp);
 	 delay(15000);
      tft.fillScreen(ST7735_BLACK);
-
+}
 delay(1000);
  if (!EnableWifi) {
+Serial.println("not setting up wifi");
+//system_update_cpu_freq(80);
 WiFi.mode(WIFI_OFF);
  WiFi.disconnect();
   WiFi.mode(WIFI_OFF);
@@ -193,9 +196,9 @@ void loop() {
   if (!client.connected()) {// connect to mqtt server
     reconnect();
   }
- }
+ 
   client.loop();//mqtt check subcriptions
-  
+  }
   analogWrite(brightnessPin, brightness);
   delay(1);//tim
   
